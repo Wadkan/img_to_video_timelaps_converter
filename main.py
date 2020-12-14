@@ -1,5 +1,6 @@
 import os
 import logging
+import sys
 
 import moviepy.video.io.ImageSequenceClip
 
@@ -22,15 +23,19 @@ output_folder_name = 'videos_done'
 OUTPUT_FOLDER = str(f'{MAIN_FOLDER}/{output_folder_name}')
 
 
+def get_if_use(folder_name):
+    return folder_name[0] != '.' and not folder_name.endswith(OUTPUT_VIDEO_FORMAT) and folder_name != output_folder_name
+
+
 def get_all_image_folders_list():
     image_folders_list = []
     date_folders = sorted(os.listdir(MAIN_FOLDER))
     # date_folders = glob.glob(f'{MAIN_FOLDER}/')
     for date_folder in date_folders:
-        if date_folder[0] != '.' and date_folder != OUTPUT_FOLDER:
+        if get_if_use(date_folder):
             sub_folders = sorted(os.listdir(str(f'{MAIN_FOLDER}/{date_folder}')))
             for sub_folder in sub_folders:
-                if sub_folder[0] != '.':
+                if get_if_use(sub_folder):
                     image_folder = str(f'{MAIN_FOLDER}/{date_folder}/{sub_folder}')
                     image_folders_list.append(image_folder)
     return image_folders_list
@@ -38,7 +43,9 @@ def get_all_image_folders_list():
 
 def get_missing_list():
     if not os.path.exists(MAIN_FOLDER):
-        logging.error("directory does not exist!")
+        logging.error(f'Error with main folder - {e}')
+        print('ERROR: Missing main folder.')
+        sys.exit()
 
     # get all videos names in a list
     all_image_folders_list = get_all_image_folders_list()
@@ -63,31 +70,27 @@ def get_missing_list():
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name):
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
-    print(out_video_path_and_name)
     # clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
     # clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
 
 
 if __name__ == '__main__':
     logging.info(f'----- Started ------')
-    try:
-        missing_folders_list = get_missing_list()
-    except Exception as e:
-        logging.error(f'Error with main folder - {e}')
+    missing_folders_list = get_missing_list()
 
-for an_image_folder in missing_folders_list:
-    try:
-        path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
-        file_name_from_folders = path_from_main.replace('/', '_')[1:]
-        an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
-
-        create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name)
-    except Exception as e1:
-        error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
-        logging.error(error_msg)
+    for an_image_folder in missing_folders_list:
+        print('1', an_image_folder)
         try:
-            os.remove()
-        except Exception as e2:
-            logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
-    else:
-        logging.info(f'{an_out_video_path_and_name} is done.')
+            path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
+            file_name_from_folders = path_from_main.replace('/', '_')[1:]
+            an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
+
+            create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name)
+        except Exception as e1:
+            error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
+            logging.error(error_msg)
+            # os.remove()
+            # except Exception as e2:
+            #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
+        else:
+            logging.info(f'{an_out_video_path_and_name} is done.')
