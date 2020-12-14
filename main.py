@@ -15,8 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-# MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-ROOT_FOLDER = '/Users/wadkan/Downloads/test'
+ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+# ROOT_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
@@ -142,12 +142,13 @@ def concatenate_clips():
 
 def get_free_space():
     hard_drive = os.path.splitdrive(ROOT_FOLDER)[0]
+    hard_drive = '.' if hard_drive == '' else hard_drive
     total, used, free = shutil.disk_usage(hard_drive)
     free_space = free // (2 ** 30)
-    estimated_size = ''  # TODO ???
+    estimated_size = '??'
 
-    message = f'{free_space} - AVAILABLE SPACE\n'
-    message += f'{estimated_size} - ESTIMATED FILE SIZE'
+    message = f'{free_space} GigaByte - AVAILABLE SPACE\n'
+    message += f'{estimated_size} GigaByte - ESTIMATED FILE SIZE'
     return message
 
     # print("Total: %d GiB" % (total // (2 ** 30)))
@@ -169,8 +170,9 @@ if __name__ == '__main__':
         options = [('s', 'Start conversation'),
                    ('i', 'Show img_files'),
                    ('r', 'remove temp files from output folder'),
-                   ('e', 'Exit'),
-                   ('+', 'Concatenating clips')
+                   ('+', 'Concatenating clips'),
+                   ('g', 'Get free space'),
+                   ('e', 'Exit')
                    ]
         options_letters = [i[0] for i in options]
         print(options_letters)
@@ -189,6 +191,8 @@ if __name__ == '__main__':
         else:
             if do_i_start == 'r':
                 remove_temp_files()
+            elif do_i_start == 'g':
+                get_free_space()
             elif do_i_start == '+':
                 concatenate_clips()
             elif do_i_start == 'i':
