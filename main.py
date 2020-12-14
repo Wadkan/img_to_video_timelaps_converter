@@ -12,8 +12,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-# MAIN_FOLDER = '/Users/wadkan/Downloads/test'
+# MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+MAIN_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
@@ -62,7 +62,36 @@ def get_missing_list():
     return set(all_image_folders_list) - set(done_video_list_without_extension)
 
 
+def get_temp_path_and_name(path, to_temp_back_back=False):
+    temp_naming = '_temp_'
+    head_and_tail = os.path.split(path)
+    if not to_temp_back_back:
+        return os.path.join(head_and_tail[0], f'{temp_naming}{head_and_tail[1]}')
+    else:
+        return os.path.join(head_and_tail[0], head_and_tail[1].replace(temp_naming, ''))
+
+
+def rename_temp_after_completed(temp_name):
+    try:
+        new = get_temp_path_and_name(temp_name, True)
+        os.rename(temp_name, new)
+        logging.error(f'Rename {new} done.')
+    except Exception as e3:
+        logging.error(f'Error at renaming: – {e3}')
+
+
+def remove_temp_files():
+    temp_files_list = os.listdir(OUTPUT_FOLDER)
+    for filename in temp_files_list:
+        if os.path.split(filename)[1].startswith('_temp_'):
+            os.remove(os.path.join(OUTPUT_FOLDER, filename))
+
+
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name, test_mode=False):
+    temp_name = get_temp_path_and_name(out_video_path_and_name)
+    print(f'Start rendering with folder: {image_folder} into {temp_name} ...')
+    logging.info(f'Start rendering with folder: {image_folder} into {temp_name} ...')
+
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
 
@@ -70,7 +99,8 @@ def create_video_from_an_image_folder(image_folder, out_video_path_and_name, tes
         [print(i) for i in image_files_sorted]
     else:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
-        clip.write_videofile(out_video_path_and_name)  # , codec='libx264'
+        clip.write_videofile(temp_name)  # , codec='libx264'
+        rename_temp_after_completed(temp_name)
 
 
 if __name__ == '__main__':
@@ -80,23 +110,37 @@ if __name__ == '__main__':
         print('The videos are already done.')
         logging.info('The videos are already done.')
     else:
-        # TODO: calculate needed space
+        # TODO: calculate needed space (video x 24.7 = imgs)
         # TODO: check and print whether we have enough space
         print(f'There are {len(missing_folders_list)} videos to render.')
         logging.info(f'There are {len(missing_folders_list)} videos to render.')
 
+        options = [('s', 'Start conversation'),
+                   ('i', 'Show img_files'),
+                   ('r', 'remove temp files from output folder'),
+                   ('e', 'Exit')
+                   ]
+        options_letters = [i[0] for i in options]
+        print(options_letters)
+
+        [print(f'{i[0]} - {i[1]}') for i in options]
+
         do_i_start = ''
-        while do_i_start not in ['s', 'i', 'e']:
-            do_i_start = input('\n  s - Start conversation\n  i - show img_files\n  e - Exit?\n   --> ')
-            if do_i_start not in ['s', 'i', 'e']:
+        while do_i_start not in options_letters:
+
+            do_i_start = input(' -->')
+
+            if do_i_start not in options_letters:
                 print('Incorrect answer.')
         if do_i_start == 'e':
             print('Bye then.')
         else:
-            if do_i_start == 'i':
+            if do_i_start == 'r':
+                remove_temp_files()
+            elif do_i_start == 'i':
                 TEST_MODE = True
                 logging.info(f'-- SHOW IMAGES--')
-            else:
+            elif do_i_start == 's':
                 TEST_MODE = False
                 logging.info(f'-- START RENDERING--')
 
@@ -115,5 +159,4 @@ if __name__ == '__main__':
                 else:
                     logging.info(f'{an_out_video_path_and_name} is done.')
 
-
-#TODO: IF DONE and in the menu: merge all videos into one, and after clear small videos after a prompt.
+# TODO: IF DONE and in the menu: merge all videos into one, and after clear small videos after a prompt.
