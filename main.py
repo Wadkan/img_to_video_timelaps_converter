@@ -63,7 +63,7 @@ def get_missing_list():
     except Exception as e3:
         logging.error(f'Error at check output folder: - {e3}')
 
-    return set(all_image_folders_list) - set(done_video_list_without_extension)
+    return sorted(list(set(all_image_folders_list) - set(done_video_list_without_extension)))
 
 
 def get_temp_path_and_name(path, to_temp_back_back=False):
@@ -84,16 +84,20 @@ def rename_temp_after_completed(temp_name):
         logging.error(f'Error at renaming: – {e3}')
 
 
+def print_and_log(msgx):
+    print(msg)
+    logging.info(msgx)
+
+
 def remove_temp_files():
     temp_files_list = os.listdir(OUTPUT_FOLDER)
+
+    msg9 = f'  {len(temp_files_list)} will be removed.'
+    print_and_log(msg9)
+
     for filename in temp_files_list:
         if os.path.split(filename)[1].startswith(TEMP_PREFIX):
             os.remove(os.path.join(OUTPUT_FOLDER, filename))
-
-
-def print_and_log(msg):
-    print(msg)
-    logging.info(msg)
 
 
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name, test_mode=False):
@@ -126,10 +130,10 @@ def get_all_done_clips():
     return clips
 
 
-def convert_all_images_into_clips():
+def convert_all_images_into_clips(the_missing_folders_list):
     i = 1
-    length = len(missing_folders_list)
-    for an_image_folder in missing_folders_list:
+    length = len(the_missing_folders_list)
+    for an_image_folder in the_missing_folders_list:
         if not TEST_MODE:
             msg7 = f'... START {i} / {length}'
             i += 1
@@ -194,6 +198,7 @@ if __name__ == '__main__':
         msg = '----- APP Started ------'
         print_and_log(msg)
         missing_folders_list = get_missing_list()
+
         if len(missing_folders_list) == 0:
             msg = 'The videos are already done.'
             print_and_log(msg)
@@ -234,11 +239,11 @@ if __name__ == '__main__':
                 elif do_i_start == 'i':
                     TEST_MODE = True
                     logging.info(f'-- SHOW IMAGES--')
-                    convert_all_images_into_clips()
+                    convert_all_images_into_clips(missing_folders_list)
                 elif do_i_start == 's' or do_i_start == 'ss':
                     TEST_MODE = False
                     logging.info(f'-- START RENDERING--')
-                    convert_all_images_into_clips()
+                    convert_all_images_into_clips(missing_folders_list)
 
                 if do_i_start == 'ss':
                     do_sleep()
