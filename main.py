@@ -49,14 +49,13 @@ def get_missing_list():
 
     # get all videos names in a list
     all_image_folders_list = get_all_image_folders_list()
-    # all_videos_list = [f'all_image_folder.{OUTPUT_VIDEO_FORMAT}' for all_image_folder in all_image_folders_list]
 
     # get existing videos list
     try:
         if not os.path.exists(OUTPUT_FOLDER):
             os.mkdir(OUTPUT_FOLDER)
         done_video_list = sorted(os.listdir(OUTPUT_FOLDER))
-        done_video_list_without_extension = [full_filename.split('.')[0] for full_filename in done_video_list]
+        done_video_list_without_extension = [f"{MAIN_FOLDER}/{full_filename.split('.')[0].replace('_', '/')}" for full_filename in done_video_list]
     except Exception as e3:
         logging.error(f'Error at check output folder: - {e3}')
 
@@ -70,16 +69,21 @@ def get_missing_list():
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name):
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
-    # clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
-    # clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
+
+    clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
+    clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
 
 
 if __name__ == '__main__':
     logging.info(f'----- Started ------')
     missing_folders_list = get_missing_list()
-
+    if len(missing_folders_list) == 0:
+        print('The videos are already done.')
+        logging.info('The videos are already done.')
+    else:
+        print(f'There are {len(missing_folders_list)} videos to render.')
+        logging.info(f'There are {len(missing_folders_list)} videos to render.')
     for an_image_folder in missing_folders_list:
-        print('1', an_image_folder)
         try:
             path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
             file_name_from_folders = path_from_main.replace('/', '_')[1:]
