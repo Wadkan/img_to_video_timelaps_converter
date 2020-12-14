@@ -74,7 +74,7 @@ def create_video_from_an_image_folder(image_folder, out_video_path_and_name, tes
 
 
 if __name__ == '__main__':
-    logging.info(f'----- Started ------')
+    logging.info(f'----- APP Started ------')
     missing_folders_list = get_missing_list()
     if len(missing_folders_list) == 0:
         print('The videos are already done.')
@@ -91,7 +91,12 @@ if __name__ == '__main__':
         if do_i_start == 'e':
             print('Bye then.')
         else:
-            TEST_MODE = True if do_i_start == 'i' else False
+            if do_i_start == 'i':
+                TEST_MODE = True
+                logging.info(f'-- SHOW IMAGES--')
+            else:
+                TEST_MODE = False
+                logging.info(f'-- START RENDERING--')
 
             for an_image_folder in missing_folders_list:
                 try:
