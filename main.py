@@ -13,7 +13,6 @@ logging.basicConfig(
 
 #####
 MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-TEST_MODE = True
 # MAIN_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
@@ -83,17 +82,28 @@ if __name__ == '__main__':
     else:
         print(f'There are {len(missing_folders_list)} videos to render.')
         logging.info(f'There are {len(missing_folders_list)} videos to render.')
-    for an_image_folder in missing_folders_list:
-        try:
-            path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
-            file_name_from_folders = path_from_main.replace('/', '_')[1:]
-            an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
-            create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name, TEST_MODE)
-        except Exception as e1:
-            error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
-            logging.error(error_msg)
-            # os.remove()
-            # except Exception as e2:
-            #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
+
+        do_i_start = ''
+        while do_i_start not in ['s', 'i', 'e']:
+            do_i_start = input('\n  s - Start conversation\n  i - show img_files\n  e - Exit?\n   --> ')
+            if do_i_start not in ['s', 'i', 'e']:
+                print('Incorrect answer.')
+        if do_i_start == 'e':
+            print('Bye then.')
         else:
-            logging.info(f'{an_out_video_path_and_name} is done.')
+            TEST_MODE = True if do_i_start == 'i' else False
+
+            for an_image_folder in missing_folders_list:
+                try:
+                    path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
+                    file_name_from_folders = path_from_main.replace('/', '_')[1:]
+                    an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
+                    create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name, TEST_MODE)
+                except Exception as e1:
+                    error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
+                    logging.error(error_msg)
+                    # os.remove()
+                    # except Exception as e2:
+                    #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
+                else:
+                    logging.info(f'{an_out_video_path_and_name} is done.')
