@@ -12,8 +12,9 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-# MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-MAIN_FOLDER = '/Users/wadkan/Downloads/test'
+MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+TEST_MODE = True
+# MAIN_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
@@ -62,12 +63,15 @@ def get_missing_list():
     return set(all_image_folders_list) - set(done_video_list_without_extension)
 
 
-def create_video_from_an_image_folder(image_folder, out_video_path_and_name):
+def create_video_from_an_image_folder(image_folder, out_video_path_and_name, test_mode=False):
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
 
-    clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
-    clip.write_videofile(out_video_path_and_name)  # , codec='libx264'
+    if test_mode:
+        [print(i) for i in image_files_sorted]
+    else:
+        clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
+        clip.write_videofile(out_video_path_and_name)  # , codec='libx264'
 
 
 if __name__ == '__main__':
@@ -84,8 +88,7 @@ if __name__ == '__main__':
             path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
             file_name_from_folders = path_from_main.replace('/', '_')[1:]
             an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
-
-            create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name)
+            create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name, TEST_MODE)
         except Exception as e1:
             error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
             logging.error(error_msg)
