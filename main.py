@@ -151,7 +151,7 @@ def convert_all_images_into_clips(the_missing_folders_list):
             # except Exception as e2:
             #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
         else:
-            logging.info(f'DONE - {an_out_video_path_and_name}')
+            logging.info(f'  DONE - {an_out_video_path_and_name}')
     if not TEST_MODE:
         msg6 = 'All images converted.'
         print_and_log(msg6)
