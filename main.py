@@ -215,6 +215,10 @@ if __name__ == '__main__':
             [print(f'{i[0]} - {i[1]}') for i in options]
             do_i_start = input(' --> ')
 
+            if do_i_start == 'ss':
+                msg8 = ' - sleep mode is active -'
+            print_and_log(msg8)
+
             if do_i_start not in options_letters:
                 print('Incorrect answer.')
             elif do_i_start == 'e':
@@ -236,6 +240,4 @@ if __name__ == '__main__':
                 convert_all_images_into_clips()
 
             if do_i_start == 'ss':
-                msg8 = ' - sleep mode is active -'
-                print_and_log(msg8)
                 do_sleep()
