@@ -15,8 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-# ROOT_FOLDER = '/Users/wadkan/Downloads/test'
+# ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+ROOT_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
@@ -84,9 +84,9 @@ def rename_temp_after_completed(temp_name):
         logging.error(f'Error at renaming: – {e3}')
 
 
-def print_and_log(msgx):
-    print(msg)
-    logging.info(msgx)
+def print_and_log(msg00):
+    print(msg00)
+    logging.info(msg00)
 
 
 def remove_temp_files():
@@ -135,9 +135,9 @@ def convert_all_images_into_clips(the_missing_folders_list):
     length = len(the_missing_folders_list)
     for an_image_folder in the_missing_folders_list:
         if not TEST_MODE:
-            msg7 = f'... START {i} / {length}'
+            msg_remain = f'... START {i} / {length}'
+            print_and_log(msg_remain)
             i += 1
-            print_and_log(msg7)
 
         try:
             path_from_main = an_image_folder.replace(ROOT_FOLDER, '')
