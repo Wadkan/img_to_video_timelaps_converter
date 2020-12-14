@@ -62,16 +62,12 @@ def get_missing_list():
     return set(all_image_folders_list) - set(done_video_list_without_extension)
 
 
-# date_folder_folder = '20201117'
-# sub_folder = '105MEDIA'
-
-
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name):
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
 
     clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
-    clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
+    clip.write_videofile(out_video_path_and_name)  # , codec='libx264'
 
 
 if __name__ == '__main__':
