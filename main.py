@@ -148,8 +148,9 @@ def convert_all_images_into_clips():
             #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
         else:
             logging.info(f'DONE - {an_out_video_path_and_name}')
-    msg6 = 'All images converted.'
-    print_and_log(msg6)
+    if not TEST_MODE:
+        msg6 = 'All images converted.'
+        print_and_log(msg6)
 
 
 def concatenate_clips():
