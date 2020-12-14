@@ -79,7 +79,7 @@ def rename_temp_after_completed(temp_name):
     try:
         new = get_temp_path_and_name(temp_name, True)
         os.rename(temp_name, new)
-        logging.error(f'Rename {new} done.')
+        logging.info(f'DONE - rename {new}')
     except Exception as e3:
         logging.error(f'Error at renaming: – {e3}')
 
@@ -126,6 +126,32 @@ def get_all_done_clips():
     return clips
 
 
+def convert_all_images_into_clips():
+    i = 1
+    length = len(missing_folders_list)
+    for an_image_folder in missing_folders_list:
+        if not TEST_MODE:
+            msg7 = f'... START {i} / {length}'
+            i += 1
+            print_and_log(msg7)
+
+        try:
+            path_from_main = an_image_folder.replace(ROOT_FOLDER, '')
+            file_name_from_folders = path_from_main.replace('/', '_')[1:]
+            an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
+            create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name, TEST_MODE)
+        except Exception as e1:
+            error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
+            logging.error(error_msg)
+            # os.remove()
+            # except Exception as e2:
+            #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
+        else:
+            logging.info(f'DONE - {an_out_video_path_and_name}')
+    msg6 = 'All images converted.'
+    print_and_log(msg6)
+
+
 def concatenate_clips():
     full_file_name = f'full_video.{OUTPUT_VIDEO_FORMAT}'
     all_done_clips = get_all_done_clips()
@@ -143,12 +169,12 @@ def concatenate_clips():
 def get_free_space():
     hard_drive = os.path.splitdrive(ROOT_FOLDER)[0]
     hard_drive = '/' if hard_drive == '' else hard_drive
-    print(hard_drive)
     total, used, free = shutil.disk_usage(hard_drive)
     free_space = free // (2 ** 30)
     estimated_size = '??'
 
-    message = f'{free_space} GigaByte - AVAILABLE SPACE\n'
+    message = f'Drive: {hard_drive}\n'
+    message += f'{free_space} GigaByte - AVAILABLE SPACE\n'
     message += f'{estimated_size} GigaByte - ESTIMATED FILE SIZE'
     return message
     # print("Total: %d GiB" % (total // (2 ** 30)))
@@ -175,44 +201,28 @@ if __name__ == '__main__':
                    ('e', 'Exit')
                    ]
         options_letters = [i[0] for i in options]
-        print(options_letters)
 
-        [print(f'{i[0]} - {i[1]}') for i in options]
-
-        do_i_start = ''
-        while do_i_start not in options_letters:
+        while True:
+            print()
+            [print(f'{i[0]} - {i[1]}') for i in options]
             do_i_start = input(' --> ')
 
             if do_i_start not in options_letters:
                 print('Incorrect answer.')
-
-        if do_i_start == 'e':
-            print('Bye then.')
-        else:
-            if do_i_start == 'r':
+            elif do_i_start == 'e':
+                print('Bye then.')
+                break
+            elif do_i_start == 'r':
                 remove_temp_files()
             elif do_i_start == 'g':
-                get_free_space()
+                print(get_free_space())
             elif do_i_start == '+':
                 concatenate_clips()
             elif do_i_start == 'i':
                 TEST_MODE = True
                 logging.info(f'-- SHOW IMAGES--')
+                convert_all_images_into_clips()
             elif do_i_start == 's':
                 TEST_MODE = False
                 logging.info(f'-- START RENDERING--')
-
-            for an_image_folder in missing_folders_list:
-                try:
-                    path_from_main = an_image_folder.replace(ROOT_FOLDER, '')
-                    file_name_from_folders = path_from_main.replace('/', '_')[1:]
-                    an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
-                    create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name, TEST_MODE)
-                except Exception as e1:
-                    error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
-                    logging.error(error_msg)
-                    # os.remove()
-                    # except Exception as e2:
-                    #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
-                else:
-                    logging.info(f'{an_out_video_path_and_name} is done.')
+                convert_all_images_into_clips()
