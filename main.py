@@ -80,6 +80,8 @@ if __name__ == '__main__':
         print('The videos are already done.')
         logging.info('The videos are already done.')
     else:
+        # TODO: calculate needed space
+        # TODO: check and print whether we have enough space
         print(f'There are {len(missing_folders_list)} videos to render.')
         logging.info(f'There are {len(missing_folders_list)} videos to render.')
 
