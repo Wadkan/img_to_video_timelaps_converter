@@ -15,8 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-# ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-ROOT_FOLDER = '/Users/wadkan/Downloads/test'
+ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+# ROOT_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
