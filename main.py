@@ -112,3 +112,6 @@ if __name__ == '__main__':
                     #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
                 else:
                     logging.info(f'{an_out_video_path_and_name} is done.')
+
+
+#TODO: IF DONE and in the menu: merge all videos into one, and after clear small videos after a prompt.
