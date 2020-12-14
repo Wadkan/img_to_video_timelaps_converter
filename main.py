@@ -10,11 +10,14 @@ logging.basicConfig(
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
 
+#####
+MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+# MAIN_FOLDER = '/Users/wadkan/Downloads/test'
+#####
+
 OUTPUT_VIDEO_FORMAT = 'mpg4'
 IMG_FILE_FORMAT = 'jpg'
 FPS = 24
-# MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-MAIN_FOLDER = '/Users/wadkan/Downloads/test'
 output_folder_name = 'videos_done'
 OUTPUT_FOLDER = str(f'{MAIN_FOLDER}/{output_folder_name}')
 
@@ -35,8 +38,7 @@ def get_all_image_folders_list():
 
 def get_missing_list():
     if not os.path.exists(MAIN_FOLDER):
-        logging.error()
-        print("directory does not exist!")
+        logging.error("directory does not exist!")
 
     # get all videos names in a list
     all_image_folders_list = get_all_image_folders_list()
