@@ -11,11 +11,11 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-# MAIN_FOLDER = '/Users/wadkan/Downloads/test'
+# MAIN_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+MAIN_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
-OUTPUT_VIDEO_FORMAT = 'mpg4'
+OUTPUT_VIDEO_FORMAT = 'mp4'
 IMG_FILE_FORMAT = 'jpg'
 FPS = 24
 output_folder_name = 'videos_done'
@@ -63,8 +63,8 @@ def get_missing_list():
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name):
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
-    # clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
-    # clip.write_videofile(out_video_path_and_name)
+    clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
+    clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
 
 
 if __name__ == '__main__':
