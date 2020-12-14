@@ -184,6 +184,11 @@ def get_free_space():
     # print("Free: %d GiB" % (free // (2 ** 30)))
 
 
+def do_sleep():
+    if os.name == 'posix':  # for Linus
+        os.system('shutdown -s now')
+
+
 if __name__ == '__main__':
     msg = '----- APP Started ------'
     print_and_log(msg)
@@ -196,6 +201,7 @@ if __name__ == '__main__':
         print_and_log(msg)
 
         options = [('s', 'Start conversation'),
+                   ('ss', 'Start conversation and than sleep'),
                    ('i', 'Show img_files'),
                    ('r', 'remove temp files from output folder'),
                    ('+', 'Concatenating clips'),
@@ -224,7 +230,10 @@ if __name__ == '__main__':
                 TEST_MODE = True
                 logging.info(f'-- SHOW IMAGES--')
                 convert_all_images_into_clips()
-            elif do_i_start == 's':
+            elif do_i_start == 's' or do_i_start == 'ss':
                 TEST_MODE = False
                 logging.info(f'-- START RENDERING--')
                 convert_all_images_into_clips()
+
+            if do_i_start == 'ss':
+                do_sleep()
