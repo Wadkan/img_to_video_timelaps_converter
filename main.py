@@ -63,8 +63,9 @@ def get_missing_list():
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name):
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
     image_files_sorted = sorted(image_files)
-    clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
-    clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
+    print(out_video_path_and_name)
+    # clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files_sorted, fps=FPS)
+    # clip.write_videofile(out_video_path_and_name)   # , codec='libx264'
 
 
 if __name__ == '__main__':
@@ -76,7 +77,10 @@ if __name__ == '__main__':
 
 for an_image_folder in missing_folders_list:
     try:
-        an_out_video_path_and_name = str(f'{an_image_folder}.{OUTPUT_VIDEO_FORMAT}')
+        path_from_main = an_image_folder.replace(MAIN_FOLDER, '')
+        file_name_from_folders = path_from_main.replace('/', '_')[1:]
+        an_out_video_path_and_name = str(f'{OUTPUT_FOLDER}/{file_name_from_folders}.{OUTPUT_VIDEO_FORMAT}')
+
         create_video_from_an_image_folder(an_image_folder, an_out_video_path_and_name)
     except Exception as e1:
         error_msg = f'Error at {an_out_video_path_and_name} – {e1}.'
