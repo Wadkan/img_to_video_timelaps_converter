@@ -102,7 +102,7 @@ def remove_temp_files():
 
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name, test_mode=False):
     temp_name = get_temp_path_and_name(out_video_path_and_name)
-    msg5 = f'Start rendering with folder: {image_folder} into {temp_name} ...'
+    msg5 = f'  Start rendering with folder: {image_folder} into {temp_name} ...'
     print_and_log(msg5)
 
     image_files = [str(image_folder + '/' + img) for img in os.listdir(image_folder) if img.endswith(f'.{IMG_FILE_FORMAT}')]
