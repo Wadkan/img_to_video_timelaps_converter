@@ -190,54 +190,57 @@ def do_sleep():
 
 
 if __name__ == '__main__':
-    msg = '----- APP Started ------'
-    print_and_log(msg)
-    missing_folders_list = get_missing_list()
-    if len(missing_folders_list) == 0:
-        msg = 'The videos are already done.'
+    try:
+        msg = '----- APP Started ------'
         print_and_log(msg)
-    else:
-        msg = f'There are {len(missing_folders_list)} videos to render.'
-        print_and_log(msg)
+        missing_folders_list = get_missing_list()
+        if len(missing_folders_list) == 0:
+            msg = 'The videos are already done.'
+            print_and_log(msg)
+        else:
+            msg = f'There are {len(missing_folders_list)} videos to render.'
+            print_and_log(msg)
 
-        options = [('s', 'Start conversation'),
-                   ('ss', 'Start conversation and than sleep'),
-                   ('i', 'Show img_files'),
-                   ('r', 'remove temp files from output folder'),
-                   ('+', 'Concatenating clips'),
-                   ('g', 'Get free space - no working...'),
-                   ('e', 'Exit')
-                   ]
-        options_letters = [i[0] for i in options]
+            options = [('s', 'Start conversation'),
+                       ('ss', 'Start conversation and than sleep'),
+                       ('i', 'Show img_files'),
+                       ('r', 'remove temp files from output folder'),
+                       ('+', 'Concatenating clips'),
+                       ('g', 'Get free space - no working...'),
+                       ('e', 'Exit')
+                       ]
+            options_letters = [i[0] for i in options]
 
-        while True:
-            print()
-            [print(f'{i[0]} - {i[1]}') for i in options]
-            do_i_start = input(' --> ')
+            while True:
+                print()
+                [print(f'{i[0]} - {i[1]}') for i in options]
+                do_i_start = input(' --> ')
 
-            if do_i_start == 'ss':
-                msg8 = ' - sleep mode is active -'
-            print_and_log(msg8)
+                if do_i_start == 'ss':
+                    msg8 = ' - sleep mode is active -'
+                    print_and_log(msg8)
 
-            if do_i_start not in options_letters:
-                print('Incorrect answer.')
-            elif do_i_start == 'e':
-                print('Bye then.')
-                break
-            elif do_i_start == 'r':
-                remove_temp_files()
-            elif do_i_start == 'g':
-                print(get_free_space())
-            elif do_i_start == '+':
-                concatenate_clips()
-            elif do_i_start == 'i':
-                TEST_MODE = True
-                logging.info(f'-- SHOW IMAGES--')
-                convert_all_images_into_clips()
-            elif do_i_start == 's' or do_i_start == 'ss':
-                TEST_MODE = False
-                logging.info(f'-- START RENDERING--')
-                convert_all_images_into_clips()
+                if do_i_start not in options_letters:
+                    print('Incorrect answer.')
+                elif do_i_start == 'e':
+                    print('Bye then.')
+                    break
+                elif do_i_start == 'r':
+                    remove_temp_files()
+                elif do_i_start == 'g':
+                    print(get_free_space())
+                elif do_i_start == '+':
+                    concatenate_clips()
+                elif do_i_start == 'i':
+                    TEST_MODE = True
+                    logging.info(f'-- SHOW IMAGES--')
+                    convert_all_images_into_clips()
+                elif do_i_start == 's' or do_i_start == 'ss':
+                    TEST_MODE = False
+                    logging.info(f'-- START RENDERING--')
+                    convert_all_images_into_clips()
 
-            if do_i_start == 'ss':
-                do_sleep()
+                if do_i_start == 'ss':
+                    do_sleep()
+    except Exception as ee:
+        print(ee)
