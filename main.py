@@ -1,5 +1,6 @@
 import os
 import logging
+import shutil
 import sys
 
 import moviepy.video.io.ImageSequenceClip
@@ -117,8 +118,11 @@ def get_if_video_is_correct(file_name):
 
 def get_all_done_clips():
     all_clips_in_output_folder = os.listdir(OUTPUT_FOLDER)
+    paths = []
+    [paths.append(os.path.join(OUTPUT_FOLDER, video_file_name)) for video_file_name in all_clips_in_output_folder if get_if_video_is_correct(video_file_name)]
+    sorted(paths)
     clips = []
-    [clips.append(VideoFileClip(os.path.join(OUTPUT_FOLDER, video_file_name))) for video_file_name in all_clips_in_output_folder if get_if_video_is_correct(video_file_name)]
+    [clips.append(VideoFileClip(file_name)) for file_name in paths]
     return clips
 
 
@@ -136,6 +140,21 @@ def concatenate_clips():
         rename_temp_after_completed(temp_name)
 
 
+def get_free_space():
+    hard_drive = os.path.splitdrive(ROOT_FOLDER)[0]
+    total, used, free = shutil.disk_usage(hard_drive)
+    free_space = free // (2 ** 30)
+    estimated_size = ''  # TODO ???
+
+    message = f'{free_space} - AVAILABLE SPACE\n'
+    message += f'{estimated_size} - ESTIMATED FILE SIZE'
+    return message
+
+    # print("Total: %d GiB" % (total // (2 ** 30)))
+    # print("Used: %d GiB" % (used // (2 ** 30)))
+    # print("Free: %d GiB" % (free // (2 ** 30)))
+
+
 if __name__ == '__main__':
     msg = '----- APP Started ------'
     print_and_log(msg)
@@ -144,8 +163,6 @@ if __name__ == '__main__':
         msg = 'The videos are already done.'
         print_and_log(msg)
     else:
-        # TODO: calculate needed space (video x 24.7 = imgs)
-        # TODO: check and print whether we have enough space
         msg = f'There are {len(missing_folders_list)} videos to render.'
         print_and_log(msg)
 
@@ -162,7 +179,7 @@ if __name__ == '__main__':
 
         do_i_start = ''
         while do_i_start not in options_letters:
-            do_i_start = input(' -->')
+            do_i_start = input(' --> ')
 
             if do_i_start not in options_letters:
                 print('Incorrect answer.')
@@ -195,5 +212,3 @@ if __name__ == '__main__':
                     #     logging.error(f'Error at removing {an_out_video_path_and_name} – {e2}')
                 else:
                     logging.info(f'{an_out_video_path_and_name} is done.')
-
-# TODO: IF DONE and in the menu: merge all videos into one, and after clear small videos after a prompt.
