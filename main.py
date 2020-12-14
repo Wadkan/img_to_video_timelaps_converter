@@ -236,4 +236,6 @@ if __name__ == '__main__':
                 convert_all_images_into_clips()
 
             if do_i_start == 'ss':
+                msg8 = ' - sleep mode is active -'
+                print_and_log(msg8)
                 do_sleep()
