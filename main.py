@@ -142,7 +142,8 @@ def concatenate_clips():
 
 def get_free_space():
     hard_drive = os.path.splitdrive(ROOT_FOLDER)[0]
-    hard_drive = '.' if hard_drive == '' else hard_drive
+    hard_drive = '/' if hard_drive == '' else hard_drive
+    print(hard_drive)
     total, used, free = shutil.disk_usage(hard_drive)
     free_space = free // (2 ** 30)
     estimated_size = '??'
@@ -150,7 +151,6 @@ def get_free_space():
     message = f'{free_space} GigaByte - AVAILABLE SPACE\n'
     message += f'{estimated_size} GigaByte - ESTIMATED FILE SIZE'
     return message
-
     # print("Total: %d GiB" % (total // (2 ** 30)))
     # print("Used: %d GiB" % (used // (2 ** 30)))
     # print("Free: %d GiB" % (free // (2 ** 30)))
@@ -171,7 +171,7 @@ if __name__ == '__main__':
                    ('i', 'Show img_files'),
                    ('r', 'remove temp files from output folder'),
                    ('+', 'Concatenating clips'),
-                   ('g', 'Get free space'),
+                   ('g', 'Get free space - no working...'),
                    ('e', 'Exit')
                    ]
         options_letters = [i[0] for i in options]
