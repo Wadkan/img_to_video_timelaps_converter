@@ -79,7 +79,7 @@ def rename_temp_after_completed(temp_name):
     try:
         new = get_temp_path_and_name(temp_name, True)
         os.rename(temp_name, new)
-        logging.info(f'DONE - rename {new}')
+        logging.info(f'  rename OK {new}')
     except Exception as e3:
         logging.error(f'Error at renaming: – {e3}')
 
@@ -154,6 +154,7 @@ def convert_all_images_into_clips():
 
 
 def concatenate_clips():
+    # TODO: can choose: concatenate full videos, too
     full_file_name = f'full_video.{OUTPUT_VIDEO_FORMAT}'
     all_done_clips = get_all_done_clips()
     final_path = os.path.join(ROOT_FOLDER, OUTPUT_FOLDER, full_file_name)
