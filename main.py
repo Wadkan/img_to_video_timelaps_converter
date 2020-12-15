@@ -264,15 +264,15 @@ def do_sleep():
 
 if __name__ == '__main__':
     try:
-        msg = '----- APP Started ------'
+        msg = '\n----- APP Started ------'
         print_and_log(msg)
         missing_folders_list = get_missing_list()
 
         if len(missing_folders_list) == 0:
-            msg = 'The videos has already done.'
+            msg = 'All pictures has already rendered into videos.'
             print_and_log(msg)
         else:
-            msg = f'There are {len(missing_folders_list)} videos to render.'
+            msg = f'There are {len(missing_folders_list)} pictures to render into video.'
             print_and_log(msg)
 
         # TODO: is it video for concatenating
