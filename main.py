@@ -120,14 +120,11 @@ def get_if_video_is_correct(file_name):
     return file_name[0] != '.' and file_name.endswith(f'.{OUTPUT_VIDEO_FORMAT}') and not file_name.startswith(TEMP_PREFIX)
 
 
-def get_all_done_clips():
+def get_all_done_video_files():
     all_clips_in_output_folder = os.listdir(OUTPUT_FOLDER)
     paths = []
     [paths.append(os.path.join(OUTPUT_FOLDER, video_file_name)) for video_file_name in all_clips_in_output_folder if get_if_video_is_correct(video_file_name)]
-    sorted(paths)
-    clips = []
-    [clips.append(VideoFileClip(file_name)) for file_name in paths]
-    return clips
+    return sorted(paths)
 
 
 def convert_all_images_into_clips(the_missing_folders_list):
@@ -160,16 +157,31 @@ def convert_all_images_into_clips(the_missing_folders_list):
 def concatenate_clips():
     # TODO: can choose: concatenate full videos, too
     full_file_name = f'full_video.{OUTPUT_VIDEO_FORMAT}'
-    all_done_clips = get_all_done_clips()
+    all_done_video_files = get_all_done_video_files()
     final_path = os.path.join(ROOT_FOLDER, OUTPUT_FOLDER, full_file_name)
     temp_name = get_temp_path_and_name(final_path)
 
-    if len(all_done_clips) > 0:
-        msg1 = f'START CONCATENATE {len(all_done_clips)} clips'
+    if len(all_done_video_files) > 0:
+        msg1 = f'START CONCATENATE {len(all_done_video_files)} clips'
         print_and_log(msg1)
-        final = concatenate_videoclips(all_done_clips, method='compose')
-        final.write_videofile(temp_name)
-        rename_temp_after_completed(temp_name)
+
+        for next_clip_file in all_done_video_files:
+            print('---')
+            print(next_clip_file)
+            if os.path.exists(temp_name):
+                final_until_now_file = temp_name
+            elif os.path.exists(final_path):
+                final_until_now_file = final_path
+            else:
+                final_until_now_file = next_clip_file
+
+            clips = []
+            # [clips.append(VideoFileClip(file_name)) for file_name in [final_until_now_file, next_clip_file]]
+            # [print(clip) for clip in clips]
+
+            # final = concatenate_videoclips(all_done_clips, method='compose')
+            # final.write_videofile(temp_name)
+            # rename_temp_after_completed(temp_name)
 
 
 def get_free_space():
@@ -199,6 +211,7 @@ if __name__ == '__main__':
         print_and_log(msg)
         missing_folders_list = get_missing_list()
 
+        # TODO: is it video for concatenating
         if len(missing_folders_list) == 0:
             msg = 'The videos are already done.'
             print_and_log(msg)
@@ -206,46 +219,46 @@ if __name__ == '__main__':
             msg = f'There are {len(missing_folders_list)} videos to render.'
             print_and_log(msg)
 
-            options = [('s', 'Start conversation'),
-                       ('ss', 'Start conversation and than sleep'),
-                       ('i', 'Show img_files'),
-                       ('r', 'remove temp files from output folder'),
-                       ('+', 'Concatenating clips'),
-                       ('g', 'Get free space - no working...'),
-                       ('e', 'Exit')
-                       ]
-            options_letters = [i[0] for i in options]
+        options = [('s', 'Start conversation'),
+                   ('ss', 'Start conversation and than sleep'),
+                   ('i', 'Show img_files'),
+                   ('r', 'remove temp files from output folder'),
+                   ('+', 'Concatenating clips'),
+                   ('g', 'Get free space - no working...'),
+                   ('e', 'Exit')
+                   ]
+        options_letters = [i[0] for i in options]
 
-            while True:
-                print()
-                [print(f'{i[0]} - {i[1]}') for i in options]
-                do_i_start = input(' --> ')
+        while True:
+            print()
+            [print(f'{i[0]} - {i[1]}') for i in options]
+            do_i_start = input(' --> ')
 
-                if do_i_start == 'ss':
-                    msg8 = ' - sleep mode is active -'
-                    print_and_log(msg8)
+            if do_i_start == 'ss':
+                msg8 = ' - sleep mode is active -'
+                print_and_log(msg8)
 
-                if do_i_start not in options_letters:
-                    print('Incorrect answer.')
-                elif do_i_start == 'e':
-                    print('Bye then.')
-                    break
-                elif do_i_start == 'r':
-                    remove_temp_files()
-                elif do_i_start == 'g':
-                    print(get_free_space())
-                elif do_i_start == '+':
-                    concatenate_clips()
-                elif do_i_start == 'i':
-                    TEST_MODE = True
-                    logging.info(f'-- SHOW IMAGES--')
-                    convert_all_images_into_clips(missing_folders_list)
-                elif do_i_start == 's' or do_i_start == 'ss':
-                    TEST_MODE = False
-                    logging.info(f'-- START RENDERING--')
-                    convert_all_images_into_clips(missing_folders_list)
+            if do_i_start not in options_letters:
+                print('Incorrect answer.')
+            elif do_i_start == 'e':
+                print('Bye then.')
+                break
+            elif do_i_start == 'r':
+                remove_temp_files()
+            elif do_i_start == 'g':
+                print(get_free_space())
+            elif do_i_start == '+':
+                concatenate_clips()
+            elif do_i_start == 'i':
+                TEST_MODE = True
+                logging.info(f'-- SHOW IMAGES--')
+                convert_all_images_into_clips(missing_folders_list)
+            elif do_i_start == 's' or do_i_start == 'ss':
+                TEST_MODE = False
+                logging.info(f'-- START RENDERING--')
+                convert_all_images_into_clips(missing_folders_list)
 
-                if do_i_start == 'ss':
-                    do_sleep()
+            if do_i_start == 'ss':
+                do_sleep()
     except Exception as ee:
         print(ee)
