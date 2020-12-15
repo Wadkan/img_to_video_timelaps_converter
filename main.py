@@ -200,7 +200,7 @@ def concatenate_clips():
 
     i = 1
     if len(all_done_video_files) > 0:
-        i =+ 1
+        i = + 1
         msg1 = f'START CONCATENATE {i}/{len(all_done_video_files)} clips'
         print_and_log(msg1)
 
@@ -291,6 +291,7 @@ if __name__ == '__main__':
                    ('i', 'Show img_files'),
                    ('r', 'remove temp files from output folder'),
                    ('+', 'Concatenating clips'),
+                   ('+s', 'Concatenating clips and than sleep'),
                    ('g', 'Get free space - no working...'),
                    ('e', 'Exit')
                    ]
@@ -316,7 +317,7 @@ if __name__ == '__main__':
                 print(get_free_space())
             elif do_i_start == '+':
                 concatenate_clips()
-            elif do_i_start == 'i':
+            elif do_i_start == 'i' or do_i_start == '+s':
                 TEST_MODE = True
                 logging.info(f'-- SHOW IMAGES--')
                 convert_all_images_into_clips(missing_folders_list)
@@ -325,7 +326,7 @@ if __name__ == '__main__':
                 logging.info(f'-- START RENDERING--')
                 convert_all_images_into_clips(missing_folders_list)
 
-            if do_i_start == 'ss':
+            if do_i_start == 'ss' or do_i_start == '+s':
                 do_sleep()
     except Exception as ee:
         print(ee)
