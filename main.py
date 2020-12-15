@@ -121,7 +121,7 @@ def remove_if_temp_merged_file(temp_merged_file):
     except Exception as eee:
         logging.error(f'Error at removeing temp_merged_until file: {temp_merged_file} – {eee}')
 
-    msg10 = f'  {len(temp_merged_file)} removed - {str(bol)}.'
+    msg10 = f'  {temp_merged_file} removed - {str(bol)}.'
     print_and_log(msg10)
 
     return bol
