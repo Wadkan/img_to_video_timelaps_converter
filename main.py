@@ -268,12 +268,20 @@ if __name__ == '__main__':
         print_and_log(msg)
         missing_folders_list = get_missing_list()
 
-        # TODO: is it video for concatenating
         if len(missing_folders_list) == 0:
-            msg = 'The videos are already done.'
+            msg = 'The videos has already done.'
             print_and_log(msg)
         else:
             msg = f'There are {len(missing_folders_list)} videos to render.'
+            print_and_log(msg)
+
+        # TODO: is it video for concatenating
+        all_done_video_files = get_all_done_video_files()
+        if len(all_done_video_files) == 0:
+            msg = 'The videos has already concatenated.'
+            print_and_log(msg)
+        else:
+            msg = f'There are {len(all_done_video_files)} videos to concatenate.'
             print_and_log(msg)
 
         options = [('s', 'Start conversation'),
