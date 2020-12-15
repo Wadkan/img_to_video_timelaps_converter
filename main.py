@@ -15,8 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-# ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-ROOT_FOLDER = '/Users/wadkan/Downloads/test'
+ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+# ROOT_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
@@ -239,9 +239,6 @@ def concatenate_clips():
                 temp_name_for_part_file = get_temp_path_and_name(last_until_now_file, temp_naming=PREFIX_FOR_DONE_PART_FILES)
                 rename_with_prefix(last_until_now_file, temp_name_for_part_file)
             last_until_now_file = merged_file
-
-
-concatenate_clips()
 
 
 def get_free_space():
