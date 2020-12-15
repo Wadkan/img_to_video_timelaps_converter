@@ -315,9 +315,9 @@ if __name__ == '__main__':
                 remove_temp_files()
             elif do_i_start == 'g':
                 print(get_free_space())
-            elif do_i_start == '+':
+            elif do_i_start == '+' or do_i_start == '+s':
                 concatenate_clips()
-            elif do_i_start == 'i' or do_i_start == '+s':
+            elif do_i_start == 'i':
                 TEST_MODE = True
                 logging.info(f'-- SHOW IMAGES--')
                 convert_all_images_into_clips(missing_folders_list)
