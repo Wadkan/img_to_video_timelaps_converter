@@ -198,8 +198,10 @@ def concatenate_clips():
     all_done_video_files = get_all_done_video_files()
     last_merged = get_last_merged_file(PREFIX_FOR_TEMP_MERGED_FILE)
 
+    i = 1
     if len(all_done_video_files) > 0:
-        msg1 = f'START CONCATENATE {len(all_done_video_files)} clips'
+        i =+ 1
+        msg1 = f'START CONCATENATE {i}/{len(all_done_video_files)} clips'
         print_and_log(msg1)
 
         if last_merged:
