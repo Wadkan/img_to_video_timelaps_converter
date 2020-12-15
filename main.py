@@ -15,8 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
-# ROOT_FOLDER = '/Users/wadkan/Downloads/test'
+# ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+ROOT_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
 OUTPUT_VIDEO_FORMAT = 'mp4'
@@ -25,9 +25,11 @@ FPS = 24
 output_folder_name = 'videos_done'
 OUTPUT_FOLDER = os.path.join(ROOT_FOLDER, output_folder_name)
 TEMP_PREFIX = '_temp_'
+PREFIX_FOR_DONE_PART_FILES = '_conc_done_'
+PREFIX_FOR_TEMP_MERGED_FILE = '_done_until_'
 
 
-def get_if_omg_is_correct(folder_name):
+def get_if_img_is_correct(folder_name):
     return folder_name[0] != '.' and not folder_name.endswith(OUTPUT_VIDEO_FORMAT) and folder_name != output_folder_name
 
 
@@ -36,10 +38,10 @@ def get_all_image_folders_list():
     date_folders = sorted(os.listdir(ROOT_FOLDER))
     # date_folders = glob.glob(f'{MAIN_FOLDER}/')
     for date_folder in date_folders:
-        if get_if_omg_is_correct(date_folder):
+        if get_if_img_is_correct(date_folder):
             sub_folders = sorted(os.listdir(os.path.join(ROOT_FOLDER, date_folder)))
             for sub_folder in sub_folders:
-                if get_if_omg_is_correct(sub_folder):
+                if get_if_img_is_correct(sub_folder):
                     image_folder = os.path.join(ROOT_FOLDER, date_folder, sub_folder)
                     image_folders_list.append(image_folder)
     return image_folders_list
@@ -66,8 +68,7 @@ def get_missing_list():
     return sorted(list(set(all_image_folders_list) - set(done_video_list_without_extension)))
 
 
-def get_temp_path_and_name(path, to_temp_back_back=False):
-    temp_naming = '_temp_'
+def get_temp_path_and_name(path, to_temp_back_back=False, temp_naming='_temp_'):
     head_and_tail = os.path.split(path)
     if not to_temp_back_back:
         return os.path.join(head_and_tail[0], f'{temp_naming}{head_and_tail[1]}')
@@ -75,13 +76,23 @@ def get_temp_path_and_name(path, to_temp_back_back=False):
         return os.path.join(head_and_tail[0], head_and_tail[1].replace(temp_naming, ''))
 
 
-def rename_temp_after_completed(temp_name):
+def rename_temp_after_completed(temp_name, temp_naming='_temp_'):
     try:
         new = get_temp_path_and_name(temp_name, True)
         os.rename(temp_name, new)
         logging.info(f'  rename OK {new}')
     except Exception as e3:
         logging.error(f'Error at renaming: – {e3}')
+
+
+def rename_with_prefix(part_name, prefix):
+    try:
+        new = get_temp_path_and_name(part_name, temp_naming=prefix)
+        print(new)
+        os.rename(part_name, new)
+        logging.info(f'  rename part file OK {new}')
+    except Exception as e3:
+        logging.error(f'Error at renaming part file: – {e3}')
 
 
 def print_and_log(msg00):
@@ -100,6 +111,22 @@ def remove_temp_files():
             os.remove(os.path.join(OUTPUT_FOLDER, filename))
 
 
+def remove_if_temp_merged_file(temp_merged_file):
+    try:
+        if os.path.split(temp_merged_file)[1].startswith(PREFIX_FOR_TEMP_MERGED_FILE):
+            os.remove(temp_merged_file)
+            bol = True
+        else:
+            bol = False
+    except Exception as eee:
+        logging.error(f'Error at removeing temp_merged_until file: {temp_merged_file} – {eee}')
+
+    msg10 = f'  {len(temp_merged_file)} removed - {str(bol)}.'
+    print_and_log(msg10)
+
+    return bol
+
+
 def create_video_from_an_image_folder(image_folder, out_video_path_and_name, test_mode=False):
     temp_name = get_temp_path_and_name(out_video_path_and_name)
     msg5 = f'  Start rendering with folder: {image_folder} into {temp_name} ...'
@@ -116,14 +143,17 @@ def create_video_from_an_image_folder(image_folder, out_video_path_and_name, tes
         rename_temp_after_completed(temp_name)
 
 
-def get_if_video_is_correct(file_name):
-    return file_name[0] != '.' and file_name.endswith(f'.{OUTPUT_VIDEO_FORMAT}') and not file_name.startswith(TEMP_PREFIX)
+def get_if_video_is_not_temp(file_name):
+    return file_name[0] != '.' and file_name.endswith(f'.{OUTPUT_VIDEO_FORMAT}') \
+           and not file_name.startswith(TEMP_PREFIX) \
+           and not file_name.startswith(PREFIX_FOR_DONE_PART_FILES) \
+           and not file_name.startswith(PREFIX_FOR_TEMP_MERGED_FILE)
 
 
 def get_all_done_video_files():
     all_clips_in_output_folder = os.listdir(OUTPUT_FOLDER)
     paths = []
-    [paths.append(os.path.join(OUTPUT_FOLDER, video_file_name)) for video_file_name in all_clips_in_output_folder if get_if_video_is_correct(video_file_name)]
+    [paths.append(os.path.join(OUTPUT_FOLDER, video_file_name)) for video_file_name in all_clips_in_output_folder if get_if_video_is_not_temp(video_file_name)]
     return sorted(paths)
 
 
@@ -154,34 +184,64 @@ def convert_all_images_into_clips(the_missing_folders_list):
         print_and_log(msg6)
 
 
+def get_last_merged_file(prefix_for_temp_merged_file):
+    path_to_out = os.path.join(ROOT_FOLDER, OUTPUT_FOLDER)
+    file_list = os.listdir(path_to_out)
+    sorted(file_list, reverse=True)
+    for file in file_list:
+        if os.path.split(file)[1].startswith(prefix_for_temp_merged_file):
+            return os.path.join(ROOT_FOLDER, OUTPUT_FOLDER, file)
+    return False
+
+
 def concatenate_clips():
-    # TODO: can choose: concatenate full videos, too
-    full_file_name = f'full_video.{OUTPUT_VIDEO_FORMAT}'
     all_done_video_files = get_all_done_video_files()
-    final_path = os.path.join(ROOT_FOLDER, OUTPUT_FOLDER, full_file_name)
-    temp_name = get_temp_path_and_name(final_path)
+    last_merged = get_last_merged_file(PREFIX_FOR_TEMP_MERGED_FILE)
 
     if len(all_done_video_files) > 0:
         msg1 = f'START CONCATENATE {len(all_done_video_files)} clips'
         print_and_log(msg1)
 
+        if last_merged:
+            last_until_now_file = last_merged
+        else:
+            last_until_now_file = all_done_video_files.pop(0)
+
         for next_clip_file in all_done_video_files:
-            print('---')
-            print(next_clip_file)
-            if os.path.exists(temp_name):
-                final_until_now_file = temp_name
-            elif os.path.exists(final_path):
-                final_until_now_file = final_path
-            else:
-                final_until_now_file = next_clip_file
-
             clips = []
-            # [clips.append(VideoFileClip(file_name)) for file_name in [final_until_now_file, next_clip_file]]
-            # [print(clip) for clip in clips]
+            [clips.append(VideoFileClip(file_name)) for file_name in [last_until_now_file, next_clip_file]]
 
-            # final = concatenate_videoclips(all_done_clips, method='compose')
-            # final.write_videofile(temp_name)
-            # rename_temp_after_completed(temp_name)
+            # GET NAME FOR MERGED_FILE
+            merged_file = get_temp_path_and_name(next_clip_file, temp_naming=PREFIX_FOR_TEMP_MERGED_FILE)
+            # GET TEMP_NAME FOR MERGED_FILE
+            temp_merged_file = get_temp_path_and_name(merged_file)
+
+            # MERGE AND WRITE FILE
+            msg1 = f'  START MERGE {last_until_now_file} + {next_clip_file} ...'
+            print_and_log(msg1)
+
+            clip_until_now = concatenate_videoclips(clips, method='compose')  # concatenate 2 video: done until now + next from the list
+            clip_until_now.write_videofile(temp_merged_file)
+
+            msg2 = f'  MERGE DONE {last_until_now_file} + {next_clip_file} ...'
+            print_and_log(msg2)
+
+            # RENAME TEMP_MERGED INTO MERGED_UNTIL
+            rename_temp_after_completed(temp_merged_file)  # rename file after concatenate to _conc_
+
+            # RENAME FROM FILE (2. from merge) AFTER MERGED (part of full)
+            temp_name_for_part_file = get_temp_path_and_name(next_clip_file, temp_naming=PREFIX_FOR_DONE_PART_FILES)
+            rename_with_prefix(next_clip_file, PREFIX_FOR_DONE_PART_FILES)
+
+            # REMOVE 1. FILE if was last_merged
+            if not remove_if_temp_merged_file(last_until_now_file):
+                # OR RENAME 1. FILE FROM MERGE
+                temp_name_for_part_file = get_temp_path_and_name(last_until_now_file, temp_naming=PREFIX_FOR_DONE_PART_FILES)
+                rename_with_prefix(last_until_now_file, temp_name_for_part_file)
+            last_until_now_file = merged_file
+
+
+concatenate_clips()
 
 
 def get_free_space():
