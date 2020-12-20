@@ -195,21 +195,21 @@ def get_last_merged_file(prefix_for_temp_merged_file):
 
 
 def concatenate_clips():
-    all_done_video_files = get_all_done_video_files()
+    all_done_video_files_ = get_all_done_video_files()
     last_merged = get_last_merged_file(PREFIX_FOR_TEMP_MERGED_FILE)
 
     i = 1
-    if len(all_done_video_files) > 0:
+    if len(all_done_video_files_) > 0:
         i = + 1
-        msg1 = f'START CONCATENATE {i}/{len(all_done_video_files)} clips'
+        msg1 = f'START CONCATENATE {i}/{len(all_done_video_files_)} clips'
         print_and_log(msg1)
 
         if last_merged:
             last_until_now_file = last_merged
         else:
-            last_until_now_file = all_done_video_files.pop(0)
+            last_until_now_file = all_done_video_files_.pop(0)
 
-        for next_clip_file in all_done_video_files:
+        for next_clip_file in all_done_video_files_:
             clips = []
             [clips.append(VideoFileClip(file_name)) for file_name in [last_until_now_file, next_clip_file]]
 
@@ -247,12 +247,12 @@ def get_free_space():
     hard_drive = os.path.splitdrive(ROOT_FOLDER)[0]
     hard_drive = '/' if hard_drive == '' else hard_drive
     total, used, free = shutil.disk_usage(hard_drive)
-    free_space = free // (2 ** 30)
+    free_space = free // (2 ** 20)
     estimated_size = '??'
 
     message = f'Drive: {hard_drive}\n'
-    message += f'{free_space} GigaByte - AVAILABLE SPACE\n'
-    message += f'{estimated_size} GigaByte - ESTIMATED FILE SIZE'
+    message += f'{free_space} MegaByte - AVAILABLE SPACE\n'
+    message += f'{estimated_size} MegaByte - ESTIMATED FILE SIZE'
     return message
     # print("Total: %d GiB" % (total // (2 ** 30)))
     # print("Used: %d GiB" % (used // (2 ** 30)))
@@ -302,7 +302,7 @@ if __name__ == '__main__':
             [print(f'{i[0]} - {i[1]}') for i in options]
             do_i_start = input(' --> ')
 
-            if do_i_start == 'ss':
+            if do_i_start == 'ss' or do_i_start == '+s':
                 msg8 = ' - sleep mode is active -'
                 print_and_log(msg8)
 
