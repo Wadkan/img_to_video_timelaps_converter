@@ -15,7 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 #####
-ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+# ROOT_FOLDER = '/Volumes/Wadkandata/________2020_Frissitopont_time_lapse'
+ROOT_FOLDER = '/Volumes/WADKAN_64'  # DO NOT USE '/' AT THE END
 # ROOT_FOLDER = '/Users/wadkan/Downloads/test'
 #####
 
@@ -49,7 +50,7 @@ def get_all_image_folders_list():
 
 def get_missing_list():
     if not os.path.exists(ROOT_FOLDER):
-        logging.error(f'Error with main folder - {e}')
+        logging.error(f'Error with main folder - {ROOT_FOLDER}')
         print('ERROR: Missing main folder.')
         sys.exit()
 
@@ -64,7 +65,6 @@ def get_missing_list():
         done_video_list_without_extension = [f"{ROOT_FOLDER}/{full_filename.split('.')[0].replace('_', '/')}" for full_filename in done_video_list]
     except Exception as e3:
         logging.error(f'Error at check output folder: - {e3}')
-
     return sorted(list(set(all_image_folders_list) - set(done_video_list_without_extension)))
 
 
