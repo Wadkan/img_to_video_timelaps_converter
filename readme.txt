@@ -18,6 +18,12 @@ render files into videos_done folder with _temp_ starting.
 After the rendering is done, rename the file: remove the _temp_ starting.
 
 
-RENDER VIDEOS INTO ONE VIDEO
+APPEND VIDEOS INTO ONE VIDEO
 start rendering one by one videos, and create a file with starting '_temp__done_until_'.
-after the rendering is done, rename the file to '_done_until_' starting.
+after the rendering is done, rename the file to '_done_until_' + the last added videos name.
+
+
+RESTART
+The app recognise the interrupted rendering and appending. It looks for '_temp_' naming.
+After restart, the app will continue the process from the point where it was interrupted.
+
