@@ -27,3 +27,6 @@ RESTART
 The app recognise the interrupted rendering and appending. It looks for '_temp_' naming.
 After restart, the app will continue the process from the point where it was interrupted.
 
+
+Start a program with the letter and '+', the computer will sleep after the process is done.
+To use sleep mode, you should start with sudo.
